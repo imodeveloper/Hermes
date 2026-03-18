@@ -218,6 +218,7 @@
 - Added PR number display when a claim is linked to a pull request.
 - Disabled `Start Scheduler` when the scheduler is already loaded.
 - Disabled `Stop Scheduler` and `Restart Scheduler` when the scheduler is not loaded.
+- Throttled GitHub Project item refreshes in HermesBar so ticket-title lookups do not poll the GraphQL API every few seconds.
 - Rebuilt and restarted HermesBar from the updated release binary.
 
 ### Validation

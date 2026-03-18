@@ -48,6 +48,7 @@ final class HermesBarApp: NSObject, NSApplicationDelegate {
     private var timer: Timer?
     private var projectItemCache: [String: ProjectItemSummary] = [:]
     private var projectItemCacheUpdatedAt: Date?
+    private var nextProjectItemRefreshAt: Date?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem.button?.title = "Hermes"
@@ -231,7 +232,11 @@ final class HermesBarApp: NSObject, NSApplicationDelegate {
     }
 
     private func fetchProjectItems(forceRefresh: Bool) -> [String: ProjectItemSummary] {
-        if !forceRefresh, let updatedAt = projectItemCacheUpdatedAt, Date().timeIntervalSince(updatedAt) < 30 {
+        let now = Date()
+        if !forceRefresh, let nextRefreshAt = nextProjectItemRefreshAt, now < nextRefreshAt {
+            return projectItemCache
+        }
+        if !forceRefresh, let updatedAt = projectItemCacheUpdatedAt, now.timeIntervalSince(updatedAt) < 300 {
             return projectItemCache
         }
 
@@ -239,6 +244,7 @@ final class HermesBarApp: NSObject, NSApplicationDelegate {
             let config = loadProjectConfiguration(),
             let data = runShellData("gh project item-list \(config.number) --owner \(config.owner) --format json")
         else {
+            nextProjectItemRefreshAt = now.addingTimeInterval(600)
             return projectItemCache
         }
 
@@ -246,6 +252,7 @@ final class HermesBarApp: NSObject, NSApplicationDelegate {
             let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
             let items = root["items"] as? [[String: Any]]
         else {
+            nextProjectItemRefreshAt = now.addingTimeInterval(600)
             return projectItemCache
         }
 
@@ -260,7 +267,8 @@ final class HermesBarApp: NSObject, NSApplicationDelegate {
         }
 
         projectItemCache = summaries
-        projectItemCacheUpdatedAt = Date()
+        projectItemCacheUpdatedAt = now
+        nextProjectItemRefreshAt = now.addingTimeInterval(300)
         return summaries
     }
 

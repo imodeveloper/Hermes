@@ -193,3 +193,37 @@
 
 ### Next
 - If needed, package HermesBar as a proper `.app` bundle for detached GUI launching without a terminal-backed session.
+
+## 2026-03-18 (HermesBar Status Clarity)
+
+### Issue
+- Post-roadmap usability refinement
+
+### Request
+- Replace raw scheduler states with clearer words.
+- Show the actual tickets Hermes agents are working on.
+- Show relative timers for active claims.
+- Disable scheduler actions when they do not apply.
+
+### Done
+- Updated HermesBar to show human-readable scheduler states:
+  - `Running now`
+  - `Idle`
+  - `Stopped`
+  - `Failed`
+- Added GitHub Project item lookups so active claims resolve to issue numbers and ticket titles instead of only internal project item IDs.
+- Added relative claim timing details:
+  - claim age
+  - heartbeat age
+- Added PR number display when a claim is linked to a pull request.
+- Disabled `Start Scheduler` when the scheduler is already loaded.
+- Disabled `Stop Scheduler` and `Restart Scheduler` when the scheduler is not loaded.
+- Rebuilt and restarted HermesBar from the updated release binary.
+
+### Validation
+- `swift build -c release`
+- `gh project item-list 1 --owner imodeveloper --format json`
+- `ps aux | rg '[H]ermesBar'`
+
+### Next
+- If needed, add a direct stale-claim cleanup action and show recent scheduler errors inline.

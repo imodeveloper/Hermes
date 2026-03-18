@@ -24,3 +24,4 @@
 - Core roadmap issues `#1` to `#16` are completed.
 - Current follow-up work should use new issues for refinements, deeper live validation, and production hardening.
 - Sandbox tickets may remain open temporarily for manual pipeline validation.
+- HermesBar follow-up refinements are in progress to improve live status readability and operator controls.

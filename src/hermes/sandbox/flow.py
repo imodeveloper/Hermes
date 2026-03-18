@@ -28,4 +28,3 @@ def create_sandbox_issue(bundle: ConfigBundle, github: GitHubClient, repo: str) 
     labels = [bundle.labels.labels["sandbox"]]
     github.ensure_label(repo, bundle.labels.labels["sandbox"], color="5319E7", description="Hermes sandbox issue")
     return github.create_issue(repo, sandbox_issue_title(), sandbox_issue_body(), labels)
-

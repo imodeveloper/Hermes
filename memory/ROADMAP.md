@@ -21,6 +21,6 @@
 
 ## Current Focus
 
-- Land the functional CLI/runtime MVP covering issues `#3` to `#16`.
-- Keep progress in small commits.
-- Build implementation issues on top of committed docs and example config contracts.
+- Core roadmap issues `#1` to `#16` are completed.
+- Current follow-up work should use new issues for refinements, deeper live validation, and production hardening.
+- Sandbox tickets may remain open temporarily for manual pipeline validation.

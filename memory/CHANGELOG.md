@@ -128,3 +128,29 @@
 ### Next
 - Push the CLI foundation branch and close the implemented roadmap issues.
 - Run additional live GitHub/project validation against a real Hermes config if needed.
+
+## 2026-03-18 (Launchd Environment Fix)
+
+### Issue
+- Post-roadmap runtime fix
+
+### Request
+- Start Hermes on this machine through `launchd`.
+
+### Done
+- Generated a repo-local Hermes config under `.hermes`.
+- Loaded Hermes as a `launchd` agent from `~/Library/LaunchAgents/com.imodeveloper.hermes.plist`.
+- Fixed the plist generator to include:
+  - `WorkingDirectory`
+  - `PATH`
+  - `HOME`
+  - `USER`
+- Verified that Hermes can now run under the reduced launchd environment where `gh` still needs access to the user home and login state.
+
+### Validation
+- `hermes doctor --config-dir /Users/ivan.borinschi/Work/Hermes/.hermes`
+- `env -i HOME=/Users/ivan.borinschi USER=ivan.borinschi PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin XPC_SERVICE_NAME=com.imodeveloper.hermes /Users/ivan.borinschi/Work/Hermes/.venv/bin/hermes poll-all --config-dir /Users/ivan.borinschi/Work/Hermes/.hermes`
+- `launchctl print gui/$(id -u)/com.imodeveloper.hermes`
+
+### Next
+- Monitor the live scheduler behavior and use the sandbox tickets for manual pipeline validation.

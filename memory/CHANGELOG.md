@@ -59,3 +59,71 @@
 ### Next
 - Commit the configuration examples in a small slice.
 - Implement Issue `#3` on top of these committed config contracts.
+
+## 2026-03-18 (CLI Foundation and MVP Runtime)
+
+### Issue
+- `#3` Implement Hermes CLI foundation and config loading
+- `#4` Implement local state store and lock management
+- `#5` Implement GitHub project discovery and metadata sync
+- `#6` Implement triage stage for Backlog items
+- `#7` Implement execution stage for Ready items with worktree orchestration
+- `#8` Implement pull request creation and In review transition
+- `#9` Implement review stage with approve/reject outcomes
+- `#10` Implement merge and release stage with human gate
+- `#11` Implement stale-run detection, heartbeats, and recovery
+- `#12` Implement model routing and token budget controls
+- `#13` Implement init wizard and launchd scheduler integration
+- `#14` Implement doctor, preflight, and dependency validation
+- `#15` Implement sandbox end-to-end validation flow
+- `#16` Document security model, extension points, and contributor workflow
+
+### Request
+- Continue implementation until Hermes is functional and testable.
+- Keep the roadmap, changelog, and docs aligned with the code.
+- Make onboarding easy and keep token use low through local-first behavior and model routing.
+
+### Done
+- Replaced the placeholder package with a functional Hermes MVP:
+  - CLI command surface
+  - YAML config loading and local override support
+  - SQLite runtime state and scheduler locks
+  - GitHub CLI integration for project items, issues, labels, PRs, and status changes
+  - pipeline operations for triage, execution claims, review processing, release-ready detection, and stale recovery
+  - worktree naming and creation helpers
+  - model routing helpers
+  - doctor/preflight checks
+  - sandbox ticket creation
+  - launchd plist generation
+- Added docs for:
+  - configuration
+  - quickstart
+  - launchd
+  - model routing
+  - pipeline architecture
+  - state model
+  - context packs
+  - model selection
+  - recovery
+  - sandbox
+  - permissions
+  - contributor extension points
+- Adjusted Python compatibility to `>=3.9` because the available local interpreter is Python 3.9.
+
+### Validation
+- Installed Hermes into a local virtual environment with `pip install -e '.[dev]'`.
+- CLI smoke checks:
+  - `hermes version`
+  - `hermes show-config`
+  - `hermes init --destination-dir /tmp/hermes-demo-2 --workspace-root /Users/ivan.borinschi/Work --state-root /tmp/hermes-state-2 --project-owner imodeveloper --project-number 1`
+  - `hermes show-config --config-dir /tmp/hermes-demo-2`
+  - `hermes doctor --config-dir /tmp/hermes-demo-2`
+  - `hermes scheduler-install --config-dir /tmp/hermes-demo-2 --destination /tmp/com.imodeveloper.hermes.plist`
+  - `hermes sandbox-create-ticket --repo imodeveloper/Hermes --config-dir /tmp/hermes-demo-2`
+  - `hermes poll-all --config-dir /tmp/hermes-demo-2 --dry-run`
+- Test suite:
+  - `pytest -q`
+
+### Next
+- Push the CLI foundation branch and close the implemented roadmap issues.
+- Run additional live GitHub/project validation against a real Hermes config if needed.

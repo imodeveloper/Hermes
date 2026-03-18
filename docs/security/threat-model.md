@@ -17,3 +17,10 @@ Early mitigation goals:
 - structured logging with redaction
 - documented recovery paths
 
+## Current Security Defaults
+
+- Hermes only operates on repos declared in config.
+- Merge and release are opt-in and human-gated by default.
+- Runtime state is kept local in SQLite.
+- Example configs keep secrets out of committed files.
+

@@ -21,6 +21,6 @@
 
 ## Current Focus
 
-- `#2` Define Hermes configuration schema and example configs.
+- Land the functional CLI/runtime MVP covering issues `#3` to `#16`.
 - Keep progress in small commits.
 - Build implementation issues on top of committed docs and example config contracts.

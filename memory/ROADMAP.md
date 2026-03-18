@@ -21,7 +21,6 @@
 
 ## Current Focus
 
-- Complete `#1` with a stable repository skeleton, plan file, memory files, and initial Python scaffold.
+- `#2` Define Hermes configuration schema and example configs.
 - Keep progress in small commits.
-- Do not start closing issues until code, docs, and validation for each slice are present.
-
+- Build implementation issues on top of committed docs and example config contracts.

@@ -1,12 +1,14 @@
 # Example Configs
 
-This directory will hold committed example configuration files for Hermes, including:
+The files in this directory define the public configuration surface for Hermes v1.
 
-- `hermes.yaml`
-- `repos.yaml`
-- `pipeline.yaml`
-- `labels.yaml`
-- `models.yaml`
+Current examples:
 
-These examples will be introduced in roadmap issue `#2`.
+- `hermes.yaml`: global runtime configuration
+- `repos.yaml`: managed repositories and worktree rules
+- `pipeline.yaml`: stage transitions, scheduling, and safety rules
+- `labels.yaml`: label naming and status marker policy
+- `models.yaml`: model routing, token budgets, and escalation rules
+
+These files are intended to be copied and adapted by users during setup.
 

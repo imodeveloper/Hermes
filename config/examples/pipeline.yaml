@@ -1,0 +1,43 @@
+stages:
+  backlog:
+    project_status: Backlog
+    action: triage
+    auto_transition: false
+  ready:
+    project_status: Ready
+    action: execute
+    auto_transition: true
+  in_progress:
+    project_status: In progress
+    action: monitor_execution
+    auto_transition: false
+  in_review:
+    project_status: In review
+    action: review
+    auto_transition: true
+  done:
+    project_status: Done
+    action: release
+    auto_transition: true
+
+concurrency:
+  global_execution_limit: 2
+  global_review_limit: 2
+
+heartbeats:
+  comment_every_seconds: 300
+  stale_warning_after_seconds: 600
+  reclaim_after_seconds: 900
+
+claims:
+  require_local_lock: true
+  require_repo_allowlist: true
+  reuse_existing_pr: true
+  reuse_existing_worktree: true
+
+recovery:
+  add_stale_label: true
+  return_unfinished_items_to_ready: true
+  return_review_rejections_to_ready: true
+  stop_on_conflict_without_rule: true
+

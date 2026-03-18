@@ -1,0 +1,54 @@
+task_classes:
+  triage_simple:
+    preferred_model: small
+    max_prompt_chars: 4000
+    max_context_expansions: 0
+    escalation:
+      on_ambiguity: triage_complex
+  triage_complex:
+    preferred_model: medium
+    max_prompt_chars: 8000
+    max_context_expansions: 1
+    escalation:
+      on_failure: human
+
+  execute_small:
+    preferred_model: medium
+    max_prompt_chars: 10000
+    max_context_expansions: 1
+    escalation:
+      on_large_diff: execute_large
+      on_failure: human
+  execute_large:
+    preferred_model: strong
+    max_prompt_chars: 18000
+    max_context_expansions: 1
+    escalation:
+      on_failure: human
+
+  review_small:
+    preferred_model: medium
+    max_prompt_chars: 10000
+    max_context_expansions: 1
+    escalation:
+      on_risk: review_risky
+  review_risky:
+    preferred_model: strong
+    max_prompt_chars: 16000
+    max_context_expansions: 1
+    escalation:
+      on_failure: human
+
+  merge_conflict:
+    preferred_model: strong
+    max_prompt_chars: 16000
+    max_context_expansions: 1
+    escalation:
+      on_failure: human
+
+defaults:
+  progress_comment_model: small
+  stale_comment_model: small
+  release_check_model: medium
+  stop_after_total_escalations: 1
+

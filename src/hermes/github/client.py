@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict
+import re
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
@@ -158,10 +158,39 @@ class GitHubClient:
             check=False,
         )
 
-    def create_pr(self, repo: str, base: str, head: str, title: str, body: str) -> str:
-        return run_command(
+    def create_pr(self, repo: str, base: str, head: str, title: str, body: str) -> dict[str, Any]:
+        try:
+            payload = self._json(
+                [
+                    "gh",
+                    "pr",
+                    "create",
+                    "-R",
+                    repo,
+                    "--base",
+                    base,
+                    "--head",
+                    head,
+                    "--title",
+                    title,
+                    "--body",
+                    body,
+                    "--json",
+                    "number,url",
+                ]
+            )
+            if isinstance(payload, dict):
+                return payload
+        except Exception:
+            pass
+        output = run_command(
             ["gh", "pr", "create", "-R", repo, "--base", base, "--head", head, "--title", title, "--body", body]
         ).stdout
+        pr_number = None
+        match = re.search(r"/pull/(\d+)", output)
+        if match:
+            pr_number = int(match.group(1))
+        return {"url": output.strip(), "number": pr_number}
 
     def list_prs(self, repo: str, state: str = "open") -> list[dict[str, Any]]:
         return self._json(
@@ -180,6 +209,13 @@ class GitHubClient:
             ]
         )
 
+    def find_pr_by_head(self, repo: str, head: str) -> dict[str, Any] | None:
+        prs = self.list_prs(repo, state="open")
+        for pr in prs:
+            if pr.get("headRefName") == head:
+                return pr
+        return None
+
     def review_pr(self, repo: str, pr_number: int, *, approve: bool, body: str) -> None:
         event = "APPROVE" if approve else "REQUEST_CHANGES"
         run_command(
@@ -189,6 +225,20 @@ class GitHubClient:
     def merge_pr(self, repo: str, pr_number: int, method: str = "squash") -> None:
         flag = {"squash": "--squash", "merge": "--merge", "rebase": "--rebase"}.get(method, "--squash")
         run_command(["gh", "pr", "merge", str(pr_number), "-R", repo, flag, "--delete-branch"])
+
+    def add_issue_to_project(self, issue_url: str) -> None:
+        run_command(
+            [
+                "gh",
+                "project",
+                "item-add",
+                str(self.project_number),
+                "--owner",
+                self.owner,
+                "--url",
+                issue_url,
+            ]
+        )
 
     def item_edit_status(self, item_id: str, project_id: str, field_id: str, option_id: str) -> None:
         run_command(

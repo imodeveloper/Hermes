@@ -306,6 +306,7 @@ def sandbox_create_ticket(
     try:
         ctx = _bundle_from_dir(config_dir)
         issue_url = create_sandbox_issue(ctx.bundle, ctx.github, repo)
+        ctx.github.add_issue_to_project(issue_url)
         console.print(issue_url)
     except Exception as exc:  # pragma: no cover
         _handle_error(exc)
@@ -321,12 +322,13 @@ def sandbox_run_e2e(
     try:
         ctx = _bundle_from_dir(config_dir)
         issue_url = create_sandbox_issue(ctx.bundle, ctx.github, repo)
+        ctx.github.add_issue_to_project(issue_url)
         emit(
             Message(
                 status="ok",
                 title="Sandbox ticket created",
-                detail=issue_url,
-                next_step="Add the issue to your GitHub Project and move it through Backlog -> Ready to exercise the pipeline.",
+                detail=f"{issue_url}\nAdded to configured project.",
+                next_step="Move the sandbox item through Backlog -> Ready to exercise the pipeline commands.",
             )
         )
     except Exception as exc:  # pragma: no cover

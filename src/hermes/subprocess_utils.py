@@ -69,3 +69,9 @@ def ensure_tools_exist(tools: Iterable[str]) -> list[str]:
         except CommandError:
             missing.append(tool)
     return missing
+
+
+def run_shell(command: str, *, cwd: Optional[Path] = None, check: bool = True) -> CommandResult:
+    """Run a shell command through zsh."""
+
+    return run_command(["/bin/zsh", "-lc", command], cwd=cwd, check=check)

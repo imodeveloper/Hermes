@@ -11,6 +11,7 @@ from hermes.config.models import ConfigBundle, RepoConfig
 from hermes.github.client import GitHubClient
 from hermes.github.models import ProjectField, ProjectItem
 from hermes.model_routing import route_for_task
+from hermes.subprocess_utils import run_shell
 from hermes.state.store import ClaimRecord, StateStore
 
 from .heartbeats import format_heartbeat
@@ -162,13 +163,12 @@ def transition_to_review(
     status_field_id, review_option_id = status_field_and_option(
         fields, ctx.bundle.pipeline.stages["in_review"].project_status
     )
-    pr_url = ""
+    pr_result: dict[str, object] | None = None
     if not dry_run:
-        pr_url = ctx.github.create_pr(item.content.repository, repo.default_branch, claim.branch_name or "", pr_title, pr_body)
+        pr_result = ctx.github.create_pr(item.content.repository, repo.default_branch, claim.branch_name or "", pr_title, pr_body)
         labels = ctx.bundle.labels.labels
         ctx.github.remove_label(item.content.repository, item.content.number, labels["executing"])
         ctx.github.add_labels(item.content.repository, item.content.number, [labels["awaiting_review"]])
-        ctx.github.comment_issue(item.content.repository, item.content.number, f"Hermes moved work to review.\n\nPR: {pr_url}")
         ctx.github.item_edit_status(item.id, project_meta["id"], status_field_id, review_option_id)
         ctx.state.upsert_claim(
             item_id=item_id,
@@ -177,8 +177,12 @@ def transition_to_review(
             status="awaiting_review",
             branch_name=claim.branch_name,
             worktree_path=claim.worktree_path,
+            pr_number=int(pr_result["number"]) if pr_result and pr_result.get("number") is not None else claim.pr_number,
         )
-    return pr_url or f"Prepared review transition for {item_id}"
+        pr_url = str(pr_result["url"]) if pr_result else ""
+        ctx.github.comment_issue(item.content.repository, item.content.number, f"Hermes moved work to review.\n\nPR: {pr_url}")
+        return pr_url or f"Prepared review transition for {item_id}"
+    return f"Prepared review transition for {item_id}"
 
 
 def review_in_review(ctx: PipelineContext, *, approve: bool, dry_run: bool = False) -> list[str]:
@@ -197,6 +201,7 @@ def review_in_review(ctx: PipelineContext, *, approve: bool, dry_run: bool = Fal
         repo = route_repo_for_item(ctx.bundle, item)
         if not repo:
             continue
+        claim = ctx.state.get_claim(item.id)
         if not dry_run:
             ctx.github.ensure_label(item.content.repository, labels["review_claimed"])
             ctx.github.add_labels(item.content.repository, item.content.number, [labels["review_claimed"]])
@@ -205,6 +210,18 @@ def review_in_review(ctx: PipelineContext, *, approve: bool, dry_run: bool = Fal
                 item.content.number,
                 format_heartbeat(stage="review", action="review-started"),
             )
+            pr = None
+            if claim and claim.pr_number:
+                pr = {"number": claim.pr_number}
+            elif claim and claim.branch_name:
+                pr = ctx.github.find_pr_by_head(item.content.repository, claim.branch_name)
+            if pr and pr.get("number") is not None:
+                ctx.github.review_pr(
+                    item.content.repository,
+                    int(pr["number"]),
+                    approve=approve,
+                    body="Hermes automated review outcome.",
+                )
             if approve:
                 ctx.github.add_labels(item.content.repository, item.content.number, [labels["approved"]])
             else:
@@ -232,8 +249,18 @@ def release_done(ctx: PipelineContext, *, dry_run: bool = False) -> list[str]:
             continue
         if labels["human_approved"] not in item.labels:
             continue
+        claim = ctx.state.get_claim(item.id)
+        pr = None
+        if claim and claim.pr_number:
+            pr = {"number": claim.pr_number}
+        elif claim and claim.branch_name:
+            pr = ctx.github.find_pr_by_head(item.content.repository, claim.branch_name)
         if not dry_run:
-            ctx.github.comment_issue(item.content.repository, item.content.number, "Hermes release gate satisfied; merge/release stage is ready.")
+            if pr and pr.get("number") is not None:
+                ctx.github.merge_pr(item.content.repository, int(pr["number"]), repo.release.merge_strategy)
+            for command in repo.release.post_merge_commands:
+                run_shell(command, cwd=repo.path, check=True)
+            ctx.github.comment_issue(item.content.repository, item.content.number, "Hermes merged and ran release hooks.")
         results.append(f"Release-ready #{item.content.number} in {repo.key}")
     return results or ["No done items are release-ready."]
 

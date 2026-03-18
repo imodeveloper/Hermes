@@ -120,6 +120,7 @@
   - `hermes doctor --config-dir /tmp/hermes-demo-2`
   - `hermes scheduler-install --config-dir /tmp/hermes-demo-2 --destination /tmp/com.imodeveloper.hermes.plist`
   - `hermes sandbox-create-ticket --repo imodeveloper/Hermes --config-dir /tmp/hermes-demo-2`
+  - `hermes sandbox-run-e2e --repo imodeveloper/Hermes --config-dir /tmp/hermes-demo-2`
   - `hermes poll-all --config-dir /tmp/hermes-demo-2 --dry-run`
 - Test suite:
   - `pytest -q`

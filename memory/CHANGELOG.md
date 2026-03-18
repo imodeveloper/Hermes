@@ -154,3 +154,42 @@
 
 ### Next
 - Monitor the live scheduler behavior and use the sandbox tickets for manual pipeline validation.
+
+## 2026-03-18 (HermesBar Menu App)
+
+### Issue
+- Post-roadmap usability addition
+
+### Request
+- Add a macOS menu bar app that shows Hermes status and exposes start, stop, restart, and run-now actions.
+- Start it after building.
+
+### Done
+- Added a Swift package-based macOS menu bar companion:
+  - `Package.swift`
+  - `Sources/HermesBar/main.swift`
+- HermesBar currently shows:
+  - scheduler state
+  - last exit code
+  - run count
+  - PID when active
+  - active claims from the Hermes SQLite state DB
+- HermesBar actions:
+  - `Run Now`
+  - `Start Scheduler`
+  - `Stop Scheduler`
+  - `Restart Scheduler`
+  - `Open Config`
+  - `Open State Folder`
+  - `Open LaunchAgent`
+  - `Quit HermesBar`
+- Built the app with `swift build -c release`.
+- Started HermesBar in a live interactive session so it remains running on this machine.
+
+### Validation
+- `swift build -c release`
+- interactive launch of `./.build/release/HermesBar`
+- verified process presence with `ps aux | rg '[H]ermesBar'`
+
+### Next
+- If needed, package HermesBar as a proper `.app` bundle for detached GUI launching without a terminal-backed session.

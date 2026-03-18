@@ -2,6 +2,8 @@
 .pytest_cache/
 .ruff_cache/
 .venv/
+.build/
+.swiftpm/
 __pycache__/
 *.py[cod]
 *.sqlite3
@@ -11,4 +13,3 @@ build/
 *.egg-info/
 .hermes.local.yaml
 .hermes.secrets.env
-

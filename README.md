@@ -25,6 +25,7 @@ Hermes is in active bootstrap. The roadmap is tracked in GitHub issues `#1` to `
 - `src/hermes/skills`: stage-scoped skill definitions and prompt helpers.
 - `src/hermes/doctor`: environment validation, preflight, and dependency checks.
 - `src/hermes/sandbox`: end-to-end dry-run and sandbox ticket flows.
+- `Sources/HermesBar`: native macOS menu bar companion for scheduler status and controls.
 
 ## Quick Start
 
@@ -40,4 +41,3 @@ Hermes is in active bootstrap. The roadmap is tracked in GitHub issues `#1` to `
 - Onboarding: [`docs/onboarding/quickstart.md`](docs/onboarding/quickstart.md)
 - Contributor guide: [`docs/contributing/development.md`](docs/contributing/development.md)
 - Memory and progress: [`memory/`](memory)
-

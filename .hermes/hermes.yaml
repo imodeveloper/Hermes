@@ -1,0 +1,22 @@
+workspace_root: /Users/ivan.borinschi/Work
+project:
+  owner: imodeveloper
+  number: 1
+scheduler:
+  enabled: true
+  interval_seconds: 60
+  timezone: Europe/Chisinau
+runtime:
+  state_db_path: /Users/ivan.borinschi/.local/share/hermes/state.sqlite3
+  log_path: /Users/ivan.borinschi/.local/share/hermes/hermes.log
+  worktree_root: /Users/ivan.borinschi/Work/Worktrees
+  global_execution_limit: 2
+github:
+  use_gh_cli: true
+  refresh_project_metadata_every_seconds: 300
+  no_op_fast_path: true
+features:
+  allow_triage_comments: true
+  allow_priority_updates: true
+  allow_pr_creation: true
+  allow_release: false

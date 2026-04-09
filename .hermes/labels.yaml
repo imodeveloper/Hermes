@@ -1,0 +1,21 @@
+labels:
+  triaged: hermes:triaged
+  claimed: hermes:claimed
+  executing: hermes:executing
+  awaiting_review: hermes:awaiting-review
+  review_claimed: hermes:review-claimed
+  reviewing: hermes:reviewing
+  changes_requested: hermes:changes-requested
+  approved: hermes:approved
+  merge_blocked: hermes:merge-blocked
+  merged: hermes:merged
+  released: hermes:released
+  stale: hermes:stale
+  sandbox: hermes:sandbox
+  human_approved: human-approved
+
+mutually_exclusive_groups:
+  - [hermes:claimed, hermes:review-claimed]
+  - [hermes:executing, hermes:reviewing]
+  - [hermes:approved, hermes:changes-requested]
+

@@ -1,0 +1,31 @@
+repos:
+- key: imodeveloperlab
+  path: /Users/ivan.borinschi/Work/imodeveloperlab
+  default_branch: main
+  worktree_root: /Users/ivan.borinschi/Work/Worktrees/imodeveloperlab
+  branch_template: codex/{issue_number}-{slug}
+  execution_concurrency: 1
+  executable: true
+  validation_commands:
+  - xcodebuild -workspace Workspace.xcworkspace -scheme Monitor-Prod -destination
+    'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.2' build
+  release:
+    enabled: true
+    human_gate_label: human-approved
+    merge_strategy: squash
+    post_merge_commands:
+    - bundle exec fastlane ios monitor_md_testflight
+- key: dskit-swiftui
+  path: /Users/ivan.borinschi/Work/dskit-swiftui
+  default_branch: main
+  worktree_root: /Users/ivan.borinschi/Work/Worktrees/dskit-swiftui
+  branch_template: codex/{issue_number}-{slug}
+  execution_concurrency: 1
+  executable: true
+  validation_commands:
+  - swiftlint lint --config swiftlint.yml
+  release:
+    enabled: false
+    human_gate_label: human-approved
+    merge_strategy: squash
+    post_merge_commands: []

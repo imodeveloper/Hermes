@@ -1,5 +1,23 @@
 # Hermes Changelog
 
+## 2026-04-09 (Repo-Local Hermes Config)
+
+### Issue
+- Operator configuration follow-up
+
+### Request
+- Commit and push the current Hermes repository changes.
+
+### Done
+- Added the `.hermes/` configuration folder with repo-local scheduler, labels, model-routing, pipeline, and repository config files.
+- Included the optional `.hermes.local.yaml` placeholder for machine-specific overrides.
+
+### Validation
+- Verified the `.hermes/` YAML files exist in the repository worktree and are ready to be tracked together.
+
+### Next
+- Replace machine-specific absolute paths in the committed config with a more portable templating or bootstrap flow when Hermes is prepared for broader reuse.
+
 ## 2026-03-18
 
 ### Issue
